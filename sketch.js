@@ -3,65 +3,84 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
-const Render = Matter.Render;
-const Constraint = Matter.Constraint;
-var bob1,bob2,bob3, bob4,bob5, roofObject
-var rope1,rope2,rope3, rope4,rope5;
-var world;
 
+let engine;
+let world;
+var angle=60;
 
+var ground;
+var b1,b2,b3,b4;
+var top_wall;
+var ball,rock;
+
+var btn1;
+var btn2;
 function setup() {
-	createCanvas(800, 600);
-	rectMode(CENTER);
+  createCanvas(400,400);
 
-
-	engine = Engine.create();
-	world = engine.world;
-
-	roofObject=new roof(400,250,230,20);
-	bob1 = new bob(320,575,40)
-	bob2 = new bob(360,575,40)
-	bob3 = new bob(400,575,40)
-	bob4 = new bob(440,575,40)
-	bob5 = new bob(480,575,40)
-	
-	rope1=new rope(bob1.body,roofObject.body,-80)
-	rope2=new rope(bob2.body,roofObject.body,-40)
-	rope3=new rope(bob3.body,roofObject.body,0)
-	rope4=new rope(bob4.body,roofObject.body,40)
-	rope5=new rope(bob5.body,roofObject.body,80)
-	
-	Engine.run(engine);
-	
+  engine = Engine.create();
+  world = engine.world;
   
-}
+   
+  var ground_options ={
+    isStatic: true
+  };
+ 
+  var ball_options = {
+    //write a code to set value of restitution such that:
+    restitution : .9
+//Ball (white circle) bounces more when it hits the bottom.
 
-function draw() {
+  }
+
+  var rock_options = {
+   // write a code to set value of restitution such that:
+   restitution: 0
+   // Rock (Red Circle) bounces less when it hits the bottom.
+  }
+   
+  btn2 = createImg('up.png');
+  btn2.position(350,30);
+  btn2.size(50,50);
+  btn2.mouseClicked(vForce);
+  
+  ball = Bodies.circle(100,10,20,ball_options);
+  World.add(world,ball);
+  
+  rock = Bodies.circle(250,10,20,rock_options);
+  World.add(world,rock);
+
+  ground= Bodies.rectangle(200,390,400,20,ground_options);
+
+  World.add(world, ground);
+ 
+  
+
   rectMode(CENTER);
-  background(230);
-  roofObject.display();
+  ellipseMode(RADIUS);
+}
 
-  rope1.display();
-  rope2.display();
-  rope3.display();
-  rope4.display();
-  rope5.display();
 
-  bob1.display();
-  bob2.display();
+function draw() 
+{
+  background(51);
+  Engine.update(engine);
   
-  bob3.display();
-  bob4.display();
-  bob5.display();
+rect(ground.position.x,ground.position.y,400,20);
+ellipse(ball.position.x,ball.position.y,20);
+push();
+fill("brown");
+ellipse(rock.position.x,rock.position.y,20);
+pop();
+}
+
+function vForce()
+{
+ //write a code to move ball up when the button is clicked.
+ Matter.Body.applyForce(ball,{x:0,y:0},{x:0, y:-0.05})
 }
 
 
-function keyPressed() {
-	if (keyCode === UP_ARROW) {
-//WRITE A CORRECT CODE TO APPLY A KEYPRESSED TO CHANGE THE POSITION OF BALL OBJECT TO THE LEFT WHEN UP ARROW KEY IS PRESSED
-      Matter.Body.applyForce(bob1.body,bob1.body.position,{x:-30,y:-20})
-	  
-	}
-}
+  
 
 
